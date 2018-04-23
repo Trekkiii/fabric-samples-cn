@@ -1,0 +1,139 @@
+# Copyright 凡派 All Rights Reserved.
+#
+# Apache-2.0
+
+version: '2'
+
+services:
+  zookeeper:
+    image: hyperledger/fabric-zookeeper
+    restart: always
+    ports: # 只指定容器的端口，宿主机会随机映射端口
+      - '2181'
+      - '2888'
+      - '3888'
+
+  kafka:
+    image: hyperledger/fabric-kafka
+    restart: always
+    environment:
+      - KAFKA_MESSAGE_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024 # 99 * 1024 * 1024 B
+      - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+    ports:
+      - '9092'
+
+  orderer.example.com:
+    container_name: orderer.example.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      # kafka
+      - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+      - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+      - ORDERER_KAFKA_VERBOSE=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer # 启动orderer节点。容器启动后默认执行的命令，相当于 orderer start
+    volumes: # 挂载宿主机目录
+      - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block # 创世区块
+      - ../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp # msp
+      - ../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls # tls
+    ports: # 指定orderer对外暴漏的端口
+      - 7050:7050
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org1.example.com # Peer 的 ID，不同节点分别指定唯一的ID
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051 # 服务地址，需要更新为网络内识别的地址，不同节点分别指定
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052 # 链码容器连接的监听地址，由于链码容器连接目前不支持双向TLS认证，生产环境中建议指定为不同地址
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051 # 对组织外发布的地址，不同节点分别指定
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
+      - ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7052:7052
+      - 7053:7053
+
+  peer1.org1.example.com:
+    container_name: peer1.org1.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org1.example.com
+      - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org1.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/tls
+
+    ports:
+      - 8051:7051
+      - 8052:7052
+      - 8053:7053
+
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org2.example.com
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:7051
+      - 9052:7052
+      - 9053:7053
+
+  peer1.org2.example.com:
+    container_name: peer1.org2.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.org2.example.com
+      - CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.org2.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 10051:7051
+      - 10052:7052
+      - 10053:7053
