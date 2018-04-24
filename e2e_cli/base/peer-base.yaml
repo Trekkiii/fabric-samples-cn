@@ -11,7 +11,7 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock # Docker的服务地址，把 docker daemon 绑定到该端口上。Docker Remote API是一个取代远程命令行界面（rcli）的REST API。我们将使用命令行工具cURL来处理url相关操作。cURL可以发送请求、获取以及发送数据、检索信息。
       # the following setting starts chaincode containers on the same bridge network as the peers
       # https://docs.docker.com/compose/networking/
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=e2ecli_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=e2e_cli_default
       #- CORE_LOGGING_LEVEL=ERROR
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
