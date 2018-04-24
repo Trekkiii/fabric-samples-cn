@@ -1,15 +1,13 @@
-# Copyright IBM Corp. All Rights Reserved.
+# Copyright 凡派 All Rights Reserved.
 #
-# SPDX-License-Identifier: Apache-2.0
-#
+# Apache-2.0
 
 ---
 ################################################################################
 #
 #   Profile
 #
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
+#   - 可以在这里编码不同的配置profiles，以便将其指定为configtxgen工具的参数
 #
 ################################################################################
 Profiles:
@@ -159,26 +157,20 @@ Application: &ApplicationDefaults
     Organizations:
 ################################################################################
 #
-#   SECTION: Capabilities
+# SECTION: Capabilities
 #
-#   - This section defines the capabilities of fabric network. This is a new
-#   concept as of v1.1.0 and should not be utilized in mixed networks with
-#   v1.0.x peers and orderers.  Capabilities define features which must be
-#   present in a fabric binary for that binary to safely participate in the
-#   fabric network.  For instance, if a new MSP type is added, newer binaries
-#   might recognize and validate the signatures from this type, while older
-#   binaries without this support would be unable to validate those
-#   transactions.  This could lead to different versions of the fabric binaries
-#   having different world states.  Instead, defining a capability for a channel
-#   informs those binaries without this capability that they must cease
-#   processing transactions until they have been upgraded.  For v1.0.x if any
-#   capabilities are defined (including a map with all capabilities turned off)
-#   then the v1.0.x peer will deliberately crash.
+# - 这部分定义了fabric网络的capabilities。这是v1.1.0的一个新概念，不应该在具有v1.0.x peer和orderer的混合网络中使用。
+# capabilities定义的特征必须存在于fabric二进制文件中，以便该二进制安全地参与到fabric网络中。
+#
+# 例如，如果添加了新的MSP类型，则较新的二进制文件可能会识别并验证来自此类型的签名，而较旧的二进制文件则无法验证这些事务。
+# 这可能会导致不同版本的fabric二进制文件具有不同的世界状态。
+#
+# 相反，为通道定义capability通知那些没有这种capability的二进制文件，它们必须停止处理事务直到完成升级。
+# 对于v1.0.x，如果定义了任何capabilities（包括所有的capabilities都被关闭），则v1.0.x peer将故意崩溃。
 #
 ################################################################################
 Capabilities:
-    # Channel capabilities apply to both the orderers and the peers and must be
-    # supported by both.  Set the value of the capability to true to require it.
+    # Channel capabilities同时应用于orderers和peers，并且两者都必须支持它。将capability的值设置为true以启用。
     Global: &ChannelCapabilities
         # V1.1 for Global is a catchall flag for behavior which has been
         # determined to be desired for all orderers and peers running v1.0.x,
@@ -186,9 +178,7 @@ Capabilities:
         # should leave this flag set to true.
         V1_1: true
 
-    # Orderer capabilities apply only to the orderers, and may be safely
-    # manipulated without concern for upgrading peers.  Set the value of the
-    # capability to true to require it.
+    # Orderer capabilities仅应用于orderers，并且可以安全地操作，而不用担心升级peers。将capability的值设置为true以启用。
     Orderer: &OrdererCapabilities
         # V1.1 for Order is a catchall flag for behavior which has been
         # determined to be desired for all orderers running v1.0.x, but the
@@ -196,9 +186,7 @@ Capabilities:
         # leave this flag set to true.
         V1_1: true
 
-    # Application capabilities apply only to the peer network, and may be safely
-    # manipulated without concern for upgrading orderers.  Set the value of the
-    # capability to true to require it.
+    # Application capabilities仅应用于peer网络，并且可以安全地操作，而不用担心升级orderers。将capability的值设置为true以启用。
     Application: &ApplicationCapabilities
         # V1.1 for Application is a catchall flag for behavior which has been
         # determined to be desired for all peers running v1.0.x, but the

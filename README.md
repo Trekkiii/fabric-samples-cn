@@ -95,19 +95,3 @@ cd /root/gopath/src/github.com/hyperledger/
 
 curl -sSL https://goo.gl/6wtTN5 | bash -s 1.1.0
 ```
-
-## e2e_cli
-
-该脚本基于docker-compose创建单机fabric网络。
-
-直接运行该脚本即可创建fabric网络。
-
-```text
-./network_setup.sh up
-```
-
-关闭网络执行如下
-
-```text
-./network_setup.sh down
-```
