@@ -153,6 +153,8 @@ mv bin/ fabric-shell/
 
 由于在`docker-compose-base.yaml`文件中，我们将`orderer`与`peer`节点的账本挂载到了docker的`volumes`，所以升级过程不会导致账本数据的丢失。
 
+升级网络的最佳实践：[>> 传送门](https://github.com/fnpac/fabric-shell/blob/master/first-network/upgrade.md)
+
 **TODO**：升级过程会删除链码容器和镜像，但升级脚本并没有再次安装、实例化，那么链码容器是怎么再次运行的呢？
 
 ### 加入新组织

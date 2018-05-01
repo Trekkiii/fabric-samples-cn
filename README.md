@@ -2,8 +2,8 @@
 
 ### 脚本模块
 
-* [e2e_cli](https://github.com/fnpac/fabric-shell/tree/master/e2e_cli)
-* [first-network](https://github.com/fnpac/fabric-shell/tree/master/first-network)
+* [>> e2e_cli](https://github.com/fnpac/fabric-shell/tree/master/e2e_cli)
+* [>> first-network](https://github.com/fnpac/fabric-shell/tree/master/first-network)
 
 ### 环境安装
 
