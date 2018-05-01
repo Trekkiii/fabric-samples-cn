@@ -34,13 +34,6 @@ LANGUAGE=golang
 # 默认的镜像标签
 IMAGETAG="latest"
 
-export FABRIC_ROOT=$PWD/../../fabric # fabric源码根路径
-
-if [ ! -d $FABRIC_ROOT ]; then
-    echo "fabric source not exits -> $FABRIC_ROOT"
-    exit 1
-fi
-
 # Print the usage message
 function printHelp () {
 

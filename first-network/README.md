@@ -38,8 +38,10 @@ byfn.sh up|down|restart|generate|upgrade [-c <channel name>] [-t <timeout>] [-d 
 直接运行该脚本即可使用默认配置创建fabric网络。
 
 ```text
-./byfn.sh up
+./byfn.sh -m up
 ```
+
+> 💡 第一次启动可能会失败，尝试先关闭`./byfn.sh -m down`，再重新启动
 
 > 💡 务必保证fabric的docker镜像和用来生成必要的身份证书、创世区块、应用通道配置交易文件和锚点更新配置文件等文件的二进制文件(i.e cryptogen、configtxgen)版本一致！！！
 
@@ -60,35 +62,35 @@ curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.
 1. 你可以通过如下命令指定使用的镜像的版本创建启动fabric网络：
 
 ```bash
-./byfn.sh up -i 1.1.0
+./byfn.sh -m up -i 1.1.0
 ```
 
 2. 也可以使用脚本的默认配置，但是通过如下命令将指定版本的镜像标记`latest`tag。
 
 **v1.0.6**
 ```bash
-docker tag hyperledger/fabric-peer:x86_64-1.0.6 hyperledger/fabric-peer \
-docker tag hyperledger/fabric-orderer:x86_64-1.0.6 hyperledger/fabric-orderer \
-docker tag hyperledger/fabric-ccenv:x86_64-1.0.6 hyperledger/fabric-ccenv \
-docker tag hyperledger/fabric-javaenv:x86_64-1.0.6 hyperledger/fabric-javaenv \
-docker tag hyperledger/fabric-tools:x86_64-1.0.6 hyperledger/fabric-tools \
-docker tag hyperledger/fabric-couchdb:x86_64-0.4.6 hyperledger/fabric-couchdb \
-docker tag hyperledger/fabric-kafka:x86_64-0.4.6 hyperledger/fabric-kafka \
-docker tag hyperledger/fabric-zookeeper:x86_64-0.4.6 hyperledger/fabric-zookeeper \
-docker tag hyperledger/fabric-ca:x86_64-1.0.6 hyperledger/fabric-ca
+docker tag hyperledger/fabric-peer:x86_64-1.0.6 hyperledger/fabric-peer; \
+docker tag hyperledger/fabric-orderer:x86_64-1.0.6 hyperledger/fabric-orderer; \
+docker tag hyperledger/fabric-ccenv:x86_64-1.0.6 hyperledger/fabric-ccenv; \
+docker tag hyperledger/fabric-javaenv:x86_64-1.0.6 hyperledger/fabric-javaenv; \
+docker tag hyperledger/fabric-tools:x86_64-1.0.6 hyperledger/fabric-tools; \
+docker tag hyperledger/fabric-couchdb:x86_64-0.4.6 hyperledger/fabric-couchdb; \
+docker tag hyperledger/fabric-kafka:x86_64-0.4.6 hyperledger/fabric-kafka; \
+docker tag hyperledger/fabric-zookeeper:x86_64-0.4.6 hyperledger/fabric-zookeeper; \
+docker tag hyperledger/fabric-ca:x86_64-1.0.6 hyperledger/fabric-ca;
 ```
 
 **v1.1.0**
 ```bash
-docker tag hyperledger/fabric-peer:x86_64-1.1.0 hyperledger/fabric-peer \
-docker tag hyperledger/fabric-orderer:x86_64-1.1.0 hyperledger/fabric-orderer \
-docker tag hyperledger/fabric-ccenv:x86_64-1.1.0 hyperledger/fabric-ccenv \
-docker tag hyperledger/fabric-javaenv:x86_64-1.1.0 hyperledger/fabric-javaenv \
-docker tag hyperledger/fabric-tools:x86_64-1.1.0 hyperledger/fabric-tools \
-docker tag hyperledger/fabric-couchdb:x86_64-0.4.6 hyperledger/fabric-couchdb \
-docker tag hyperledger/fabric-kafka:x86_64-0.4.6 hyperledger/fabric-kafka \
-docker tag hyperledger/fabric-zookeeper:x86_64-0.4.6 hyperledger/fabric-zookeeper \
-docker tag hyperledger/fabric-ca:x86_64-1.0.6 hyperledger/fabric-ca
+docker tag hyperledger/fabric-peer:x86_64-1.1.0 hyperledger/fabric-peer; \
+docker tag hyperledger/fabric-orderer:x86_64-1.1.0 hyperledger/fabric-orderer; \
+docker tag hyperledger/fabric-ccenv:x86_64-1.1.0 hyperledger/fabric-ccenv; \
+docker tag hyperledger/fabric-javaenv:x86_64-1.1.0 hyperledger/fabric-javaenv; \
+docker tag hyperledger/fabric-tools:x86_64-1.1.0 hyperledger/fabric-tools; \
+docker tag hyperledger/fabric-couchdb:x86_64-0.4.6 hyperledger/fabric-couchdb; \
+docker tag hyperledger/fabric-kafka:x86_64-0.4.6 hyperledger/fabric-kafka; \
+docker tag hyperledger/fabric-zookeeper:x86_64-0.4.6 hyperledger/fabric-zookeeper; \
+docker tag hyperledger/fabric-ca:x86_64-1.1.0 hyperledger/fabric-ca;
 ```
 
 ##### bin（二进制文件）
@@ -118,7 +120,7 @@ mv bin/ fabric-shell/
 * 生成orderer创世区块，应用通道配置交易文件和锚点更新配置文件
 
 ```bash
-./byfn.sh generate
+./byfn.sh -m generate
 ```
 
 ### 关闭网络
@@ -134,13 +136,13 @@ mv bin/ fabric-shell/
 7. 删除通过`configtxgen`工具生成的创世区块、应用通道配置交易文件、锚节点配置更新文件
 
 ```bash
-./byfn.sh down
+./byfn.sh -m down
 ```
 
 ### 重启网络
 
 ```bash
-./byfn.sh restart
+./byfn.sh -m restart
 ```
 
 > 💡 重启操作不会删除生成的Artifacts。不会执行**关闭网络**操作中的4-7步。但是账本总是会被删除。
@@ -156,7 +158,7 @@ mv bin/ fabric-shell/
 ### 加入新组织
 
 ```bash
-./eyfn.sh up
+./eyfn.sh -m up
 ```
 
 这一步涉及到三个关键脚本：`step1org3.sh`,`step2org3.sh`,`step3org3.sh`。

@@ -181,7 +181,7 @@ chaincodeQuery () {
 
     # continue to poll
     # we either get a successful response, or reach TIMEOUT
-    while test "$(($(date +%s)-starttime)))" -lt "$TIMEOUT" -a $rc -ne 0
+    while test "$(($(date +%s)-starttime))" -lt "$TIMEOUT" -a $rc -ne 0
     do
         sleep $DELAY
         echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"

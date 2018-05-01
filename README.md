@@ -105,11 +105,11 @@ pip install docker-compose
 ```text
 cd /root/gopath/src/github.com/hyperledger/
 
-# 克隆`fabric-shell`库、下载fabric二进制文件、下载configtx.yaml、configtx.yaml、configtx.yaml配置文件、下载fabric docker镜像
+# 克隆fabric-shell库、下载fabric二进制文件、下载configtx.yaml、core.yaml、orderer.yaml配置文件、下载fabric docker镜像
 curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0
 
-# 下载fabric二进制文件、下载configtx.yaml、configtx.yaml、configtx.yaml配置文件、下载fabric docker镜像
-# 不会克隆`fabric-shell`库，仅支持1.1.0
+# 下载fabric二进制文件、下载configtx.yaml、core.yaml、orderer.yaml配置文件、下载fabric docker镜像
+# 但不会克隆`fabric-shell`库（仅支持1.1.0）
 curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.0.6 1.0.6
 ```
 
