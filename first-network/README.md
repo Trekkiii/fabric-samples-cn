@@ -155,7 +155,9 @@ mv bin/ fabric-shell/
 
 升级网络的最佳实践：[>> 传送门](https://github.com/fnpac/fabric-shell/blob/master/first-network/upgrade.md)
 
-**TODO**：升级过程会删除链码容器和镜像，但升级脚本并没有再次安装、实例化，那么链码容器是怎么再次运行的呢？
+> Q:升级过程会删除链码容器和镜像，但升级脚本并没有再次安装、实例化，那么链码容器是怎么再次运行的呢？
+> A:链码安装后保存目录为`/var/hyperledger/production/chaincodes/mycc.1.0`，`/var/hyperledger/production`通过`volumes`挂载了，升级网络不会丢失，
+> 通过调用链码(i.e peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}')会重新创建链码镜像和容器，并启动链码容器。
 
 ### 加入新组织
 
