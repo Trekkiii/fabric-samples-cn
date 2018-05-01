@@ -1,0 +1,33 @@
+# Copyright 凡派 All Rights Reserved.
+#
+# Apache-2.0
+
+version: '2'
+
+services:
+  peer-base:
+    image: hyperledger/fabric-peer:$IMAGE_TAG
+    environment:
+      # Docker的服务地址，把 docker daemon 绑定到该端口上。
+      # Docker Remote API是一个取代远程命令行界面（rcli）的REST API。
+      # 我们将使用命令行工具cURL来处理url相关操作。cURL可以发送请求、获取以及发送数据、检索信息。
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_byfn
+      - CORE_LOGGING_LEVEL=INFO
+      #- CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true # 自动选举代表节点
+      - CORE_PEER_GOSSIP_ORGLEADER=false # 是否作为组织代表节点从orderering服务拉去区块
+      # 'CORE_PEER_PROFILE_ENABLED'：超级账本fabric peer节点支持通过HTTP的分析服务。
+      # 服务默认在TCP端口6060上运行，并且默认情况下处于禁用状态。
+      # 可以通过在core.yaml文件中将peer.profile.enabled变量设置为true或通过在环境中设置CORE_PEER_PROFILE_ENABLED=true来启用。
+      # 您还可以通过设置peer.profile.listenAddress或'CORE_PEER_PROFILE_LISTENADDRESS'来更改HTTP地址/端口。
+      - CORE_PEER_PROFILE_ENABLED=true
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start # 启动peer节点

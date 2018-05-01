@@ -88,15 +88,19 @@ function removeUnwantedImages() {
 
 function networkDown () {
 
-    docker-compose -f $COMPOSE_FILE down
+    if [ "${IF_COUCHDB}" == "couchdb" ]; then
+        docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH down
+    else
+        docker-compose -f $COMPOSE_FILE down
+    fi
 
-    # 删除docker中所有容器
+    # 删除docker中的所有容器
     clearAllContainers
 
     # 删除链码镜像
     removeUnwantedImages
 
-    # 删除orderer创世区块、应用通道配置交易文件、身份证书
+    # 删除orderer创世区块、配置交易文件、身份证书
     rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config
 }
 
