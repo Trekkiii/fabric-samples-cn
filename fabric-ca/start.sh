@@ -22,7 +22,7 @@ if [ "$dockerContainers" != "" ]; then
 fi
 
 # 删除链码容器
-chaincodeContainers=$(docker ps -a | awk '$7~/dev-peer/ {print $1}')
+chaincodeContainers=$(docker ps -a | awk '$2~/dev-peer/ {print $1}')
 if [ "$chaincodeContainers" != "" ]; then
     log "Deleting existing chaincode containers ..."
     docker rm -f $chaincodeContainers > /dev/null
