@@ -4,8 +4,8 @@
 #
 # Apache-2.0
 #
-# 如果使用该脚本，请执行：curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0
-# 具体使用请参考[bootstrap.sh脚本](https://github.com/fnpac/fabric-shell/blob/master/README.md#bootstrap.sh脚本)
+# 如果使用该脚本，请执行：curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0
+# 具体使用请参考[bootstrap.sh脚本](https://github.com/fnpac/fabric-samples-cn/blob/master/README.md#bootstrap.sh脚本)
 
 # 如果version未指定，则默认使用latest released version
 export VERSION=1.1.0
@@ -15,7 +15,7 @@ export CA_VERSION=$VERSION
 
 # current version of thirdparty images (couchdb, kafka and zookeeper) released
 export THIRDPARTY_IMAGE_VERSION=0.4.6
-# i.e linux-amd64
+# e.g linux-amd64
 export ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
 
 # Set MARCH variable i.e ppc64le,s390x,x86_64,i386
@@ -46,7 +46,7 @@ cat << EOF
   使用说明: bootstrap.sh [<version>] [<ca_version>] [-d -s -b]
 
       -d - 忽略下载docker镜像
-      -s - 忽略克隆fabric-shell代码库
+      -s - 忽略克隆fabric-samples-cn代码库
       -b - 忽略下载fabric二进制文件
 
   默认版本1.1.0
@@ -60,18 +60,18 @@ samplesInstall() {
 
     # 仅支持v1.1.0
     if [ "${VERSION}" == "1.1.0" ]; then
-        # 克隆（如果需要）fabric-shell库并切换到要下载的二进制文件和docker映像相应版本
+        # 克隆（如果需要）fabric-samples-cn库并切换到要下载的二进制文件和docker映像相应版本
         if [ -d first-network ]; then
-            # 如果当前处于fabric-shell目录下，切换到相应的版本
-            echo "===> Checking out v${VERSION} branch of hyperledger/fabric-shell"
+            # 如果当前处于fabric-samples-cn目录下，切换到相应的版本
+            echo "===> Checking out v${VERSION} branch of hyperledger/fabric-samples-cn"
             git checkout v${VERSION}
-        elif [ -d fabric-shell ]; then
-            # 如果fabric-shell库已经克隆了，并且在当前目录下，进入到fabric-shell目录并切换到相应的版本
-            echo "===> Checking out v${VERSION} branch of hyperledger/fabric-shell"
-            cd fabric-shell && git checkout v${VERSION}
+        elif [ -d fabric-samples-cn ]; then
+            # 如果fabric-samples-cn库已经克隆了，并且在当前目录下，进入到fabric-samples-cn目录并切换到相应的版本
+            echo "===> Checking out v${VERSION} branch of hyperledger/fabric-samples-cn"
+            cd fabric-samples-cn && git checkout v${VERSION}
         else
-            echo "===> Cloning hyperledger/fabric-shell repo and checkout v${VERSION}"
-            git clone -b master https://github.com/fnpac/fabric-shell.git && cd fabric-shell && git checkout v${VERSION}
+            echo "===> Cloning hyperledger/fabric-samples-cn repo and checkout v${VERSION}"
+            git clone -b master https://github.com/fnpac/fabric-samples-cn.git && cd fabric-samples-cn && git checkout v${VERSION}
         fi
     fi
 }
@@ -125,7 +125,7 @@ binaryIncrementalDownload() {
 binaryDownload() {
 
     local BINARY_FILE=$1 # 保存的文件名
-    # i.e
+    # e.g
     #   https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/linux-amd64-1.1.0/hyperledger-fabric-linux-amd64-1.1.0.tar.gz
     #   https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/linux-amd64-1.1.0/hyperledger-fabric-ca-linux-amd64-1.1.0.tar.gz
     local URL=$2 # 下载url
@@ -234,9 +234,9 @@ done
 
 if [ "$SAMPLES" == "true" ]; then
   echo
-  echo "Installing hyperledger/fabric-shell repo"
+  echo "Installing hyperledger/fabric-samples-cn repo"
   echo
-  # 下载fabric-shell
+  # 下载fabric-samples-cn
   samplesInstall
 fi
 # 此时处于fabric-sample目录下

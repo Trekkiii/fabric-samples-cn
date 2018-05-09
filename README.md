@@ -1,9 +1,9 @@
-# fabric-shell v1.1.0
+# fabric-samples-cn v1.1.0
 
 ### 脚本模块
 
-* [>> e2e_cli](https://github.com/fnpac/fabric-shell/tree/master/e2e_cli)
-* [>> first-network](https://github.com/fnpac/fabric-shell/tree/master/first-network)
+* [>> e2e_cli](https://github.com/fnpac/fabric-samples-cn/tree/master/e2e_cli)
+* [>> first-network](https://github.com/fnpac/fabric-samples-cn/tree/master/first-network)
 
 ### 环境安装
 
@@ -82,7 +82,7 @@ pip install docker-compose
 使用说明: bootstrap.sh [<version>] [<ca_version>] [-d -s -b]
 
   -d - 忽略下载docker镜像
-  -s - 忽略克隆fabric-shell代码库
+  -s - 忽略克隆fabric-samples-cn代码库
   -b - 忽略下载fabric二进制文件
 
 默认版本1.1.0
@@ -90,11 +90,11 @@ pip install docker-compose
 
 `bootstrap.sh`脚本主要执行如下操作：
 
-* 克隆`fabric-shell`代码库；
+* 克隆`fabric-samples-cn`代码库；
     
-    fabric-shell代码库只提供了v1.1.0版本的支持；
+    fabric-samples-cn代码库只提供了v1.1.0版本的支持；
     
-* 下载fabric二进制文件，并保存到fabric-shell目录下的`bin`文件夹下；
+* 下载fabric二进制文件，并保存到fabric-samples-cn目录下的`bin`文件夹下；
 
     v1.1.0版本还会下载configtx.yaml、configtx.yaml、configtx.yaml配置文件；
     
@@ -105,12 +105,12 @@ pip install docker-compose
 ```text
 cd /root/gopath/src/github.com/hyperledger/
 
-# 克隆fabric-shell库、下载fabric二进制文件、下载configtx.yaml、core.yaml、orderer.yaml配置文件、下载fabric docker镜像
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0
+# 克隆fabric-samples-cn库、下载fabric二进制文件、下载configtx.yaml、core.yaml、orderer.yaml配置文件、下载fabric docker镜像
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0
 
 # 下载fabric二进制文件、下载configtx.yaml、core.yaml、orderer.yaml配置文件、下载fabric docker镜像
-# 但不会克隆`fabric-shell`库（仅支持1.1.0）
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.0.6 1.0.6
+# 但不会克隆`fabric-samples-cn`库（仅支持1.1.0）
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.0.6 1.0.6
 ```
 
 > 💡 务必在fabric源码同级目录下执行上述命令操作

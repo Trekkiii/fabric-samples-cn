@@ -65,7 +65,7 @@ checkOSNAvailability() {
         # NF是个代表总列数的系统变量，所以$NF代表最后一列，还支持$(NF-1)来表示倒数第二列。
         # 还支持列之间的运算，如$NF-$(NF-1)是最后两列的值相减。
         # 只写一个print 是 print $0的简写，打印整行所有数据。
-        # i.e 2018-04-23 14:38:45.910 UTC [channelCmd] readBlock -> DEBU 00a Received block: 0
+        # e.g 2018-04-23 14:38:45.910 UTC [channelCmd] readBlock -> DEBU 00a Received block: 0
         test $? -eq 0 && VALUE=$(cat log.txt | awk '/Received block/ {print $NF}')
         test "$VALUE" = "0" && let rc=0
 
@@ -231,7 +231,7 @@ chaincodeQuery () {
 
         peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}' >&log.txt
 
-        # i.e Query Result: 100
+        # e.g Query Result: 100
         test $? -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
 
         test "$VALUE" = "$2" && let rc=0

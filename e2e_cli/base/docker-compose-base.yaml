@@ -61,7 +61,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051 # 服务地址，需要更新为网络内识别的地址，不同节点分别指定
       - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052 # 链码容器连接的监听地址，由于链码容器连接目前不支持双向TLS认证，生产环境中建议指定为不同地址
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051 # 对组织外发布的地址，不同节点分别指定
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051 # 节点被组织外节点感知时的地址
       - CORE_PEER_LOCALMSPID=Org1MSP
     volumes:
       - /var/run/:/host/var/run/

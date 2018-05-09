@@ -53,7 +53,7 @@ cat << EOF
         -f <docker-compose-file> - 指定要使用的docker-compose 文件(默认为docker-compose-cli.yaml)
         -s <dbtype> - 使用的数据库: goleveldb (默认) 或者 couchdb(支持更高级的查询)
         -l <language> - 编写链码使用的开发语言: golang (默认) 或者 node
-        -i <imagetag> - 创建网络所使用镜像的tag (默认为\"latest\")，i.e -i 1.1.0
+        -i <imagetag> - 创建网络所使用镜像的tag (默认为\"latest\")，e.g -i 1.1.0
 
     例如：
 
@@ -117,13 +117,13 @@ function checkPrereqs() {
     for UNSUPPORTED_VERSION in $BLACKLISTED_VERSIONS; do
         echo "$LOCAL_VERSION" | grep -q $UNSUPPORTED_VERSION
         if [ $? -eq 0 ] ; then
-            echo "ERROR! Local Fabric binary version of $LOCAL_VERSION does not match this newer version of BYFN and is unsupported. Either move to a later version of Fabric or checkout an earlier version of fabric-shell."
+            echo "ERROR! Local Fabric binary version of $LOCAL_VERSION does not match this newer version of BYFN and is unsupported. Either move to a later version of Fabric or checkout an earlier version of fabric-samples-cn."
             exit 1
         fi
 
         echo "$DOCKER_IMAGE_VERSION" | grep -q $UNSUPPORTED_VERSION
         if [ $? -eq 0 ] ; then
-            echo "ERROR! Fabric Docker image version of $DOCKER_IMAGE_VERSION does not match this newer version of BYFN and is unsupported. Either move to a later version of Fabric or checkout an earlier version of fabric-shell."
+            echo "ERROR! Fabric Docker image version of $DOCKER_IMAGE_VERSION does not match this newer version of BYFN and is unsupported. Either move to a later version of Fabric or checkout an earlier version of fabric-samples-cn."
             exit 1
         fi
     done
@@ -420,7 +420,7 @@ function upgradeNetwork () {
 
     docker inspect  -f '{{.Config.Volumes}}' orderer.example.com |grep -q '/var/hyperledger/production/orderer'
     if [ $? -ne 0 ]; then
-        echo "ERROR !!!! This network does not appear to be using volumes for its ledgers, did you start from fabric-shell >= v1.0.6?"
+        echo "ERROR !!!! This network does not appear to be using volumes for its ledgers, did you start from fabric-samples-cn >= v1.0.6?"
         exit 1
     fi
 

@@ -1,6 +1,6 @@
 # e2e_cli
 
-> 💡 确保你已经读完了[README.md](https://github.com/fnpac/fabric-shell/blob/master/README.md)
+> 💡 确保你已经读完了[README.md](https://github.com/fnpac/fabric-samples-cn/blob/master/README.md)
 
 ## 特性
 
@@ -8,7 +8,7 @@
 * fabric网络结构包括：2个Org（分别有2个Peer）、1个Cli、1个Orderer（3个Zookeeper以及4个Kafka）；
 * 适合快速构建并测试fabric区块链网络；
 
-> 💡 该脚本构建fabric区块链网络所使用的二进制文件，是基于`fabric`源码构建的，所以务必确保`fabric-shell`文件夹与`fabric`源码文件夹处于同一目录下。
+> 💡 该脚本构建fabric区块链网络所使用的二进制文件，是基于`fabric`源码构建的，所以务必确保`fabric-samples-cn`文件夹与`fabric`源码文件夹处于同一目录下。
 
 ## 操作fabric
 

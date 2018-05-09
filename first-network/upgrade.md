@@ -7,13 +7,13 @@
 可以通过如下命令下载fabric v1.0.6镜像
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.0.6 1.0.6 -s -b
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.0.6 1.0.6 -s -b
 ```
 
 可以通过如下命令下载fabric v1.1.0镜像
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -s -b
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -s -b
 ```
 
 ### fabric脚本
@@ -73,10 +73,10 @@ root@vm***:~/gopath/src/github.com/hyperledger/fabric-samples/first-network# ./b
 
 ##### v1.0.6 => v1.1.0
 
-下载v1.1.0 fabric-shell脚本代码 & 下载运行脚本所需的v1.1.0二进制文件：
+下载v1.1.0 fabric-samples-cn脚本代码 & 下载运行脚本所需的v1.1.0二进制文件：
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -d
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -d
 ```
 
 需要指定所使用的镜像版本v1.1.0：
@@ -93,17 +93,17 @@ docker tag hyperledger/fabric-zookeeper:x86_64-0.4.6 hyperledger/fabric-zookeepe
 docker tag hyperledger/fabric-ca:x86_64-1.1.0 hyperledger/fabric-ca;
 ```
 
-升级过程需要使用到在启动fabric v1.0.6网络时生成的`channel-artifacts`、`crypto-config`这两个文件夹，我们将其Copy到`fabric-shell/first-network`目录下。
+升级过程需要使用到在启动fabric v1.0.6网络时生成的`channel-artifacts`、`crypto-config`这两个文件夹，我们将其Copy到`fabric-samples-cn/first-network`目录下。
 
 > 💡 切记不可重新生成，一定要使用启动fabric v1.0.6网络时生成的`channel-artifacts`、`crypto-config`这两个文件夹
 
 ```bash
-root@vm***:~/gopath/src/github.com/hyperledger/fabric-shell/first-network# mv ../../fabric-samples/first-network/crypto-config .
-root@vm***:~/gopath/src/github.com/hyperledger/fabric-shell/first-network# rm -rf channel-artifacts/ && mv ../../fabric-samples/first-network/channel-artifacts .
+root@vm***:~/gopath/src/github.com/hyperledger/fabric-samples-cn/first-network# mv ../../fabric-samples/first-network/crypto-config .
+root@vm***:~/gopath/src/github.com/hyperledger/fabric-samples-cn/first-network# rm -rf channel-artifacts/ && mv ../../fabric-samples/first-network/channel-artifacts .
 ```
 
 最后更新网络操作：
 
 ```bash
-root@vm***:~/gopath/src/github.com/hyperledger/fabric-shell/first-network# ./byfn.sh -m upgrade
+root@vm***:~/gopath/src/github.com/hyperledger/fabric-samples-cn/first-network# ./byfn.sh -m upgrade
 ```

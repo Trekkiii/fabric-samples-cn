@@ -1,6 +1,6 @@
 # first-network
 
-> 💡 确保你已经读完了[README.md](https://github.com/fnpac/fabric-shell/blob/master/README.md)
+> 💡 确保你已经读完了[README.md](https://github.com/fnpac/fabric-samples-cn/blob/master/README.md)
 
 ## 特性
 
@@ -10,7 +10,7 @@
 * 支持指定fabric版本；
 * 适合快速构建并测试fabric区块链；
 
-> 💡 该脚本构建fabric区块链网络所使用的二进制文件，使用的是[bootstrap.sh](https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh)脚本自动下载的二进制文件。
+> 💡 该脚本构建fabric区块链网络所使用的二进制文件，使用的是[bootstrap.sh](https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh)脚本自动下载的二进制文件。
 > 这有区别于`e2e_cli`模块，这里不用下载fabric源码。
 
 ## 使用
@@ -30,7 +30,7 @@ byfn.sh up|down|restart|generate|upgrade [-c <channel name>] [-t <timeout>] [-d 
     -f <docker-compose-file> - 指定要使用的docker-compose 文件(默认为docker-compose-cli.yaml)
     -s <dbtype> - 使用的数据库: goleveldb (默认) 或者 couchdb(支持更高级的查询)
     -l <language> - 编写链码使用的开发语言: golang (默认) 或者 node
-    -i <imagetag> - 创建网络所使用镜像的tag (默认为\"latest\")，i.e -i 1.1.0
+    -i <imagetag> - 创建网络所使用镜像的tag (默认为\"latest\")，e.g -i 1.1.0
 ```
 
 ### 启动网络
@@ -43,7 +43,7 @@ byfn.sh up|down|restart|generate|upgrade [-c <channel name>] [-t <timeout>] [-d 
 
 > 💡 第一次启动可能会失败，尝试先关闭`./byfn.sh -m down`，再重新启动
 
-> 💡 务必保证fabric的docker镜像和用来生成必要的身份证书、创世区块、应用通道配置交易文件和锚点更新配置文件等文件的二进制文件(i.e cryptogen、configtxgen)版本一致！！！
+> 💡 务必保证fabric的docker镜像和用来生成必要的身份证书、创世区块、应用通道配置交易文件和锚点更新配置文件等文件的二进制文件(e.g cryptogen、configtxgen)版本一致！！！
 
 ##### fabric docker images（docker镜像）
 
@@ -54,7 +54,7 @@ byfn.sh up|down|restart|generate|upgrade [-c <channel name>] [-t <timeout>] [-d 
 可以通过以下命令下载镜像：
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -s -b
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -s -b
 ```
 
 **二、指定镜像**
@@ -95,20 +95,20 @@ docker tag hyperledger/fabric-ca:x86_64-1.1.0 hyperledger/fabric-ca;
 
 ##### bin（二进制文件）
 
-脚本使用`$PATH`中的二进制文件(i.e cryptogen、configtxgen)来生成必要的身份证书、创世区块、应用通道配置交易文件和锚点更新配置文件等文件
+脚本使用`$PATH`中的二进制文件(e.g cryptogen、configtxgen)来生成必要的身份证书、创世区块、应用通道配置交易文件和锚点更新配置文件等文件
 
 可以通过如下命令下载指定版本的二进制文件：
 
 ```bash
 cd /root/gopath/src/github.com/hyperledger/
 
-curl -sSL https://raw.githubusercontent.com/fnpac/fabric-shell/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -d -s
+curl -sSL https://raw.githubusercontent.com/fnpac/fabric-samples-cn/master/bootstrap.sh | bash -s 1.1.0 1.1.0 -d -s
 ```
 
-此外，脚本会将`fabric-shell/bin`目录加入`PATH`，所以只需要将下载的`bin/`目录移到`fabric-shell/`目录下。
+此外，脚本会将`fabric-samples-cn/bin`目录加入`PATH`，所以只需要将下载的`bin/`目录移到`fabric-samples-cn/`目录下。
 
 ```bash
-mv bin/ fabric-shell/
+mv bin/ fabric-samples-cn/
 ```
 
 ### 生成相关文件
@@ -153,11 +153,11 @@ mv bin/ fabric-shell/
 
 由于在`docker-compose-base.yaml`文件中，我们将`orderer`与`peer`节点的账本挂载到了docker的`volumes`，所以升级过程不会导致账本数据的丢失。
 
-升级网络的最佳实践：[>> 传送门](https://github.com/fnpac/fabric-shell/blob/master/first-network/upgrade.md)
+升级网络的最佳实践：[>> 传送门](https://github.com/fnpac/fabric-samples-cn/blob/master/first-network/upgrade.md)
 
 > Q:升级过程会删除链码容器和镜像，但升级脚本并没有再次安装、实例化，那么链码容器是怎么再次运行的呢？
 > A:链码安装后保存目录为`/var/hyperledger/production/chaincodes/mycc.1.0`，`/var/hyperledger/production`通过`volumes`挂载了，升级网络不会丢失，
-> 通过调用链码(i.e peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}')会重新创建链码镜像和容器，并启动链码容器。
+> 通过调用链码(e.g peer chaincode query -C mychannel -n mycc -c '{"Args":["query","a"]}')会重新创建链码镜像和容器，并启动链码容器。
 
 ### 加入新组织
 
