@@ -4,6 +4,7 @@
 
 * [>> e2e_cli](https://github.com/fnpac/fabric-samples-cn/tree/master/e2e_cli)
 * [>> first-network](https://github.com/fnpac/fabric-samples-cn/tree/master/first-network)
+* [>> fabric-ca](https://github.com/fnpac/fabric-samples-cn/tree/master/fabric-ca)
 
 ### 环境安装
 
