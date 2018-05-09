@@ -278,10 +278,10 @@ function printPeerOrg {
     initPeerVars $1 $2
     printOrg
     echo "
-    AnchorPeers:
-       # 锚节点地址，用于跨组织的Gossip通信
-       - Host: $PEER_HOST
-         Port: 7051"
+        AnchorPeers:
+            # 锚节点地址，用于跨组织的Gossip通信
+            - Host: $PEER_HOST
+              Port: 7051"
 }
 
 # printOrg

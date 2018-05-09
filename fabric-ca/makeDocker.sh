@@ -37,7 +37,8 @@ function main {
 
 # 编写一个服务来运行fabric测试，包括创建一个通道，安装、调用和查询链码
 function writeRunFabric {
-
+    # Set samples directory relative to this script
+    SAMPLES_DIR=$(dirname $(cd ${SDIR} && pwd))
     # 进入fabric-ca目录，并设置fabric-samples-cn目录
     SHELL_DIR=$(dirname $(cd ${SDIR} && pwd))
 
@@ -49,11 +50,11 @@ function writeRunFabric {
         image: hyperledger/fabric-ca-tools
         environment:
             - GOPATH=/opt/gopath
-            command: /bin/bash -c 'sleep 3;/scripts/run-fabric.sh 2>&1 | tee /$RUN_LOGFILE; sleep 99999'
+        command: /bin/bash -c 'sleep 3;/scripts/run-fabric.sh 2>&1 | tee /$RUN_LOGFILE; sleep 99999'
         volumes:
             - ./scripts:/scripts
             - ./$DATA:/$DATA
-            - ${SAMPLES_DIR}:/opt/gopath/src/github.com/hyperledger/fabric-samples
+            - ${SAMPLES_DIR}:/opt/gopath/src/github.com/hyperledger/fabric-samples-cn
             - ${FABRIC_DIR}:/opt/gopath/src/github.com/hyperledger/fabric
         networks:
             - $NETWORK
@@ -155,7 +156,9 @@ function writeIntermediateCA {
             # intermediate.tls.certificate 信任的根CA证书
             - FABRIC_CA_SERVER_INTERMEDIATE_TLS_CERTFILES=$ROOT_CA_CERTFILE
             # CA自身证书的申请请求配置
-            - FABRIC_CA_SERVER_CSR_CN=$INT_CA_NAME
+            # Initialization failure: CN 'ica-org0' cannot be specified for an intermediate CA. Remove CN from CSR section for enrollment of intermediate CA to be successful
+            # 中间层CA不能指定 "FABRIC_CA_SERVER_CSR_CN"
+            # - FABRIC_CA_SERVER_CSR_CN=$INT_CA_NAME
             - FABRIC_CA_SERVER_CSR_HOSTS=$INT_CA_HOST
             # 开启TLS
             - FABRIC_CA_SERVER_TLS_ENABLED=true
@@ -266,7 +269,7 @@ function writePeer {
             - CORE_PEER_LOCALMSPID=$ORG_MSP_ID
             - CORE_PEER_MSPCONFIGPATH=$MYHOME/msp
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_${NETWORK}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_${NETWORK}
             - CORE_LOGGING_LEVEL=DEBUG
             # 开启TLS时的相关配置
             - CORE_PEER_TLS_ENABLED=true

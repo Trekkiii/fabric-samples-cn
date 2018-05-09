@@ -22,7 +22,11 @@ if [ "$dockerContainers" != "" ]; then
 fi
 
 # 删除链码容器
-docker rm -f $(docker ps -aq --filter name=dev-peer)
+chaincodeContainers=$(docker ps -a | awk '$7~/dev-peer/ {print $1}')
+if [ "$chaincodeContainers" != "" ]; then
+    log "Deleting existing chaincode containers ..."
+    docker rm -f $chaincodeContainers > /dev/null
+fi
 
 # 删除链码镜像
 chaincodeImages=`docker images | grep "^dev-peer" | awk '{print $3}'`
