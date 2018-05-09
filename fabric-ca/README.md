@@ -58,4 +58,6 @@ Hyperledger Fabric CA演示了以下内容：
 
 5. *run*容器启动后运行实际的测试用例。它创建一个应用通道，将peers加入应用通道，安装和实例化链码，并且查询和调用链码。见*fabric-samples-cn/fabric-ca/scripts/run-fabric.sh*脚本的*main*函数获取更多细节。
 
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"> <img alt =“Creative Commons License”style =“border-width：0”src =“https：/ /i.creativecommons.org/l/by/4.0/88x31.png“/> </a> <br />本作品根据<a rel =”license“href =”http://creativecommons.org /licenses/by/4.0/">创作共用署名4.0国际许可</a>
+## 脚本证书文件关系图
+
+![fabric-ca-storage](./fabric-ca-storage.jpg)
