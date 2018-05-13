@@ -37,10 +37,8 @@ function main {
 
 # 编写一个服务来运行fabric测试，包括创建一个通道，安装、调用和查询链码
 function writeRunFabric {
-    # Set samples directory relative to this script
+    # 进入fabric-ca目录，并设置fabric-samples-cn目录路径
     SAMPLES_DIR=$(dirname $(cd ${SDIR} && pwd))
-    # 进入fabric-ca目录，并设置fabric-samples-cn目录
-    SHELL_DIR=$(dirname $(cd ${SDIR} && pwd))
 
     # 设置fabric目录
     FABRIC_DIR=${GOPATH}/src/github.com/hyperledger/fabric
@@ -153,7 +151,7 @@ function writeIntermediateCA {
             - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca
             # CA 服务名称
             - FABRIC_CA_SERVER_CA_NAME=$INT_CA_NAME
-            # intermediate.tls.certificate 信任的根CA证书
+            # intermediate.tls.certfiles 信任的根CA证书
             - FABRIC_CA_SERVER_INTERMEDIATE_TLS_CERTFILES=$ROOT_CA_CERTFILE
             # CA自身证书的申请请求配置
             # Initialization failure: CN 'ica-org0' cannot be specified for an intermediate CA. Remove CN from CSR section for enrollment of intermediate CA to be successful
@@ -215,7 +213,7 @@ function writeOrderer {
         environment:
             - FABRIC_CA_CLIENT_HOME=$MYHOME
             - FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
-            # 已通过<fabric-ca-client register>注册了Orderer用户实体身份
+            # 已通过<fabric-ca-client register>注册了Orderer节点身份
             - ENROLLMENT_URL=https://$ORDERER_NAME_PASS@$CA_HOST:7054
             - ORDERER_HOME=$MYHOME
             - ORDERER_HOST=$ORDERER_HOST
@@ -234,7 +232,7 @@ function writeOrderer {
             - ORDERER_GENERAL_LOGLEVEL=debug
             - ORDERER_DEBUG_BROADCASTTRACEDIR=$LOGDIR
             - ORG=$ORG
-            - ORG_ADMIN_CERT=$ORG_ADMIN_CERT # 组织根CA证书
+            - ORG_ADMIN_CERT=$ORG_ADMIN_CERT # 组织管理员身份证书
         command: /bin/bash -c '/scripts/start-orderer.sh 2>&1 | tee /$ORDERER_LOGFILE'
         volumes:
             - ./scripts:/scripts
@@ -258,7 +256,7 @@ function writePeer {
         environment:
             - FABRIC_CA_CLIENT_HOME=$MYHOME
             - FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
-            # 已通过<fabric-ca-client register>注册了Peer用户实体身份
+            # 已通过<fabric-ca-client register>注册了Peer节点身份
             - ENROLLMENT_URL=https://$PEER_NAME_PASS@$CA_HOST:7054
             - PEER_NAME=$PEER_NAME
             - PEER_HOME=$MYHOME

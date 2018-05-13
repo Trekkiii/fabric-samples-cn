@@ -23,40 +23,50 @@ function main {
     touch /$SETUP_SUCCESS_FILE # 生成setup.successful文件，标记'setup'容器成功执行完所有操作
 }
 
-# 登记CA管理员
+# 登记CA管理员，FABRIC_CA_CLIENT_HOME指向CA管理员msp
+# 以便后面使用CA管理员身份去注册orderer和peer相关用户实体
 function enrollCAAdmin {
 
     # 等待，直至CA服务可用
     waitPort "$CA_NAME to start" 90 $CA_LOGFILE $CA_HOST 7054
     log "Enrolling with $CA_NAME as bootstrap identity ..."
-    # 主配置目录
-    # fabric-ca-client会在该目录下搜索配置文件
-    # 同样，也会在该目录下创建msp目录，存放证书文件
+
+    # fabric-ca-client主配置目录
+    # fabric-ca-client会在该目录下搜索配置文件，
+    # 同样，也会在该目录下生成fabric-ca-client-config.yaml文件以及创建msp目录存放身份证书文件
     export FABRIC_CA_CLIENT_HOME=$HOME/cas/$CA_NAME
-    # fabric-ca-client enroll 向CA服务端使用CA管理员身份登记时使用
-    export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE # CA的根证书
-    # 使用CA管理员身份登记
+
+    # 向CA服务端登记CA管理员身份、注册Orderer相关的所有用户实体，以及注册与Peer相关的所有用户实体时使用
+    export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+    
+    # 登记CA管理员身份
     fabric-ca-client enroll -d -u https://$CA_ADMIN_USER_PASS@$CA_HOST:7054
 }
 
 # 为每一个组织向CA服务端申请根证书，并保存到/${DATA}/orgs/${ORG}/msp
-# 如果ADMINCERTS为true，我们需要登记管理员并将证书保存到msp/admincerts
+# 如果ADMINCERTS为true，我们需要登记组织管理员并将证书保存到msp/admincerts
 function getCACerts {
 
     log "Getting CA certificates ..."
+
     for ORG in $ORGS; do
+
         initOrgVars $ORG
+
         log "Getting CA certs for organization $ORG and storing in $ORG_MSP_DIR"
-        # fabric-ca-client getcacert 向CA服务端申请根证书时使用
-        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE # CA的根证书
-        # 向服务端申请根证书，并保存到/${DATA}/orgs/${ORG}/msp/cacerts 与 /${DATA}/orgs/${ORG}/msp/intermediatecerts目录下
+
+        # 向CA服务端申请根证书时使用
+        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+
+        # 向CA服务端申请根证书，并保存到/${DATA}/orgs/${ORG}/msp目录下的/cacerts 与 /intermediatecerts文件夹下
+        # ORG_MSP_DIR=/${DATA}/orgs/${ORG}/msp
         fabric-ca-client getcacert -d -u https://$CA_HOST:7054 -M $ORG_MSP_DIR
-        # 如果MSP目录下的tls相关证书目录不存在的话，则创建它们。
-        # 执行的操作如下：
+        # 如果msp目录下的tls相关证书目录不存在的话，则创建它们。
         #   1. 创建msp/tlscacerts目录并将msp/cacerts目录下的证书拷贝到其下
         #   2. 创建msp/tlsintermediatecerts目录并将msp/intermediatecerts目录下的证书拷贝到其下
         finishMSPSetup $ORG_MSP_DIR
-        # 如果ADMINCERTS为true，我们需要登记管理员并将证书保存到msp/admincerts
+
+        # 如果ADMINCERTS为true，我们需要登记组织管理员并将证书保存到msp目录下的admincerts文件夹下
         if [ $ADMINCERTS ]; then
             switchToAdminIdentity
         fi
@@ -65,21 +75,16 @@ function getCACerts {
 
 # 注册与Orderer和Peer相关的所有用户身份
 function registerIdentities {
+
     log "Registering identities ..."
-    # 注册与Orderer相关的所有用户身份
-    # 1. 注册所有orderer节点用户
-    # 2. 注册orderer组织的管理员用户
+    # 注册与Orderer相关的所有用户实体（所有orderer节点用户、所有orderer组织的管理员用户）
     registerOrdererIdentities
-    # 注册与Peer相关的所有用户
-    # 1. 注册当前peer节点用户
-    # 2. 注册组织的管理员用户
-    # 3. 注册组织的普通用户
+
+    # 注册与Peer相关的所有用户实体（所有peer节点用户、peer组织的管理员用户、peer组织的普通用户）
     registerPeerIdentities
 }
 
-# 注册与Orderer相关的所有用户身份
-# 1. 注册所有orderer节点用户
-# 2. 注册orderer组织的管理员用户
+# 注册与Orderer相关的所有用户实体（所有orderer节点用户、所有orderer组织的管理员用户）
 function registerOrdererIdentities {
 
     for ORG in $ORDERER_ORGS; do
@@ -101,10 +106,7 @@ function registerOrdererIdentities {
     done
 }
 
-# 注册与Peer相关的所有用户
-# 1. 注册当前peer节点用户
-# 2. 注册组织的管理员用户
-# 3. 注册组织的普通用户
+# 注册与Peer相关的所有用户实体（所有peer节点用户、peer组织的管理员用户、peer组织的普通用户）
 function registerPeerIdentities {
 
     for ORG in $PEER_ORGS; do

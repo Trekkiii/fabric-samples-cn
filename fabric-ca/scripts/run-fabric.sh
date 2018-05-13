@@ -33,7 +33,7 @@ function main {
     #   -n:用于限定最多可以有多少字符可以作为有效读入。例如read –n 4 value1 value2，如果我们试图输入12 34，则只有前面有效的12 3，作为输入，实际上在你输入第4个字符'3'后，就自动结束输入。这里结果是value为12，value2为3。
     IFS=', ' read -r -a OORGS <<< "$ORDERER_ORGS"
 
-    # 将 ORDERER_PORT_ARGS 设置为与第一个orderer节点进行通信所需的参数
+    # 将 ORDERER_PORT_ARGS 设置为与第一个orderer组织的第一个orderer节点进行通信所需的参数
     initOrdererVars ${OORGS[0]} 1
     # 连接Orderer端点的连接属性
     #       -o, --orderer string    Orderer服务地址
@@ -60,7 +60,7 @@ function main {
         done
     done
 
-    # 为每个组织更新锚节点
+    # 为每个peer组织更新锚节点
     for ORG in $PEER_ORGS; do
         initPeerVars $ORG 1
         switchToAdminIdentity
@@ -128,17 +128,17 @@ function main {
     done=true
 }
 
-# 切换到当前组织的管理员身份。然后创建应用通道
+# 切换到第一个peer组织的管理员身份。然后创建应用通道。
 function createChannel {
 
     initPeerVars ${PORGS[0]} 1
-    # 切换到当前组织的管理员身份。如果之前没有登记，则登记。
+    # 切换到第一个peer组织的管理员身份。如果之前没有登记，则登记。
     switchToAdminIdentity
     logr "Creating channel '$CHANNEL_NAME' on $ORDERER_HOST ..."
     peer channel create --logging-level=DEBUG -c $CHANNEL_NAME -f $CHANNEL_TX_FILE $ORDERER_CONN_ARGS
 }
 
-# 切换到当前组织的管理员身份。然后加入应用通道
+# 切换到peer组织的管理员身份。然后加入应用通道
 function joinChannel {
 
     switchToAdminIdentity

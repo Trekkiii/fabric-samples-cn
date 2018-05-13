@@ -89,10 +89,18 @@ function initOrgVars {
 
     ORG=$1
     # https://blog.csdn.net/lee244868149/article/details/49781257
+    # 假设我们定义了一个变量为file=/dir1/dir2/dir3/my.file.txt
+    # 
     # 记忆的方法：
-    #    # 是去掉左边（键盘上#在$的左边）
-    #    %是去掉右边（键盘上%在$的右边）
-    # 单一符号是最小匹配；两个符号是最大匹配
+    # # 是去掉左边（键盘上#在$的左边）
+    #    ${file#*/}：删掉第一个/及其左边的字符串：dir1/dir2/dir3/my.file.txt
+    #    ${file##*/}：删掉最后一个/及其左边的字符串：my.file.txt
+    # %是去掉右边（键盘上%在$的右边）
+    # 
+    # ${file:0:5}：提取最左边的5个字节：/dir1
+    # ${file:5:5}：提取第5个字节右边的连续5个字节：/dir2
+    # 
+    # 单一符号是最小匹配；两个符号是最大匹配。
     # 也可以对变量值里的字符串作替换：
     #    ${file/dir/path}：将第一个dir 替换为path：/path1/dir2/dir3/my.file.txt
     #    ${file//dir/path}：将全部dir 替换为path：/path1/path2/path3/my.file.txt
@@ -330,54 +338,81 @@ function finishMSPSetup {
     fi
 }
 
-# 切换到当前组织的管理员身份。如果之前没有登记，则登记。
+# 1. 切换到当前组织的管理员身份；
+# 2. 如果之前没有登记，则登记，
+#   2.1 保存登记时生成的身份证书至/${DATA}/orgs/${ORG}/admin目录下；
+#       会在该目录下生成fabric-ca-client-config.yaml文件以及创建msp目录存放身份证书文件
+#   2.2 将/${DATA}/orgs/${ORG}/admin/msp/signcerts/下的证书拷贝为/${DATA}/orgs/${ORG}/msp/admincerts/cert.pem
+#   2.3 将/${DATA}/orgs/${ORG}/admin/msp/signcerts/下的证书拷贝为/${DATA}/orgs/${ORG}/admin/msp/admincerts/cert.pem
 function switchToAdminIdentity {
 
-    if [ ! -d $ORG_ADMIN_HOME ]; then
+    # 2. 如果之前没有登记，则登记
+    if [ ! -d $ORG_ADMIN_HOME ]; then # /${DATA}/orgs/${ORG}/admin
         # 等待CA服务端将初始化生成的根证书拷贝为CA_CHAINFILE文件
         dowait "$CA_NAME to start" 60 $CA_LOGFILE $CA_CHAINFILE
+
         log "Enrolling admin '$ADMIN_NAME' with $CA_HOST ..."
-        # 向CA服务端使用组织管理员身份登记时生成的证书的保存路径/${DATA}/orgs/$ORG/admin/msp
+
+        # fabric-ca-client主配置目录
+        # fabric-ca-client会在该目录下搜索配置文件，
+        # 同样，也会在该目录下生成fabric-ca-client-config.yaml文件以及创建msp目录存放身份证书文件
         export FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
-        # fabric-ca-client enroll 向CA服务端使用组织管理员身份登记时使用
-        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE # CA的根证书
+
+        # 向CA服务端登记组织管理员身份时使用
+        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+
+        # 登记组织管理员身份
         fabric-ca-client enroll -d -u https://$ADMIN_NAME:$ADMIN_PASS@$CA_HOST:7054
 
         # 将 /${DATA}/orgs/$ORG/admin/msp/signcerts/ 下的证书拷贝为:
-        #       /${DATA}/orgs/${ORG}/msp/admincerts/cert.pem ($DATA目录)
-        #       /${DATA}/orgs/$ORG/admin/msp/admincerts/cert.pem ($DATA目录)
+        #       /${DATA}/orgs/${ORG}/msp/admincerts/cert.pem (DATA目录)
+        #       /${DATA}/orgs/$ORG/admin/msp/admincerts/cert.pem (DATA目录)
         if [ $ADMINCERTS ]; then
-            # ORG_ADMIN_CERT=/${DATA}/orgs/${ORG}/msp/admincerts/cert.pem
             mkdir -p $(dirname "${ORG_ADMIN_CERT}")
+            # 2.2 将/${DATA}/orgs/${ORG}/admin/msp/signcerts/下的证书拷贝为/${DATA}/orgs/${ORG}/msp/admincerts/cert.pem
             cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
+            # 2.3 将/${DATA}/orgs/${ORG}/admin/msp/signcerts/下的证书拷贝为/${DATA}/orgs/${ORG}/admin/msp/admincerts/cert.pem
             mkdir $ORG_ADMIN_HOME/msp/admincerts
             cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_HOME/msp/admincerts
         fi
     fi
-    export CORE_PEER_MSPCONFIGPATH=$ORG_ADMIN_HOME/msp # /${DATA}/orgs/$ORG/admin/msp
+
+    # 1. 切换到当前组织的管理员身份
+    export CORE_PEER_MSPCONFIGPATH=$ORG_ADMIN_HOME/msp # /${DATA}/orgs/${ORG}/admin/msp
 }
 
-# 切换到当前组织的普通用户身份。如果之前没有登记，则登记。
+# 切换到peer组织的普通用户身份，如果之前没有登记，则登记。
 function switchToUserIdentity {
 
+    # fabric-ca-client主配置目录
+    # fabric-ca-client会在该目录下搜索配置文件，
+    # 同样，也会在该目录下生成fabric-ca-client-config.yaml文件以及创建msp目录存放身份证书文件
     export FABRIC_CA_CLIENT_HOME=/etc/hyperledger/fabric/orgs/$ORG/user
+    # 1. 切换到peer组织的管理员身份
     export CORE_PEER_MSPCONFIGPATH=$FABRIC_CA_CLIENT_HOME/msp
 
     if [ ! -d $FABRIC_CA_CLIENT_HOME ]; then
+
         # 等待CA服务端将初始化生成的根证书拷贝为CA_CHAINFILE文件
         dowait "$CA_NAME to start" 60 $CA_LOGFILE $CA_CHAINFILE
+
         log "Enrolling user for organization $ORG with home directory $FABRIC_CA_CLIENT_HOME ..."
-        # fabric-ca-client enroll 向CA服务端使用组织普通用户身份登记时使用
-        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE # CA的根证书
+
+        # 向CA服务端登记组织普通用户身份时使用
+        # 该环境变量配置主要针对'run'等节点，
+        # 而对于orderer、peer节点，在其docker-compose.yaml中的service.xxx.environment中已经定义FABRIC_CA_CLIENT_TLS_CERTFILES环境变量
+        export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+
         fabric-ca-client enroll -d -u https://$USER_NAME:$USER_PASS@$CA_HOST:7054
 
         # 将 /${DATA}/orgs/$ORG/admin/msp/signcerts/ 下的证书拷贝为:
-        #       /etc/hyperledger/fabric/orgs/$ORG/user/msp/admincerts ('run'容器里的目录)
+        # /etc/hyperledger/fabric/orgs/$ORG/user/msp/admincerts
         if [ $ADMINCERTS ]; then
             ACDIR=$CORE_PEER_MSPCONFIGPATH/admincerts
             mkdir -p $ACDIR
             cp $ORG_ADMIN_HOME/msp/signcerts/* $ACDIR
         fi
+
     fi
 }
 
