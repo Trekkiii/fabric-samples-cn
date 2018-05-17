@@ -246,7 +246,6 @@ function generateChannelArtifacts() {
     log "Generating orderer genesis block at $GENESIS_BLOCK_FILE"
     # Note: 由于某些未知原因（至少现在）创世区块不能命名为orderer.genesis.block，否则orderer将无法启动！
     configtxgen -profile OrgsOrdererGenesis -outputBlock $GENESIS_BLOCK_FILE
-
     if [ "$?" -ne 0 ]; then
         fatal "Failed to generate orderer genesis block"
     fi
