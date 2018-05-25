@@ -421,7 +421,7 @@ function awaitSetup {
 }
 
 # 将组织的管理员证书拷贝到目标MSP目录
-# 只有在启用了ADMINCERTS的情况下才需要
+# 只有在启用了ADMINCERTS的情况下才有效
 function copyAdminCert {
 
     if [ $# -ne 1 ]; then
